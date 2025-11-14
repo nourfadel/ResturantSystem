@@ -29,7 +29,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Lazy
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
@@ -39,7 +38,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/users/createUser", "api/auth/login").permitAll()
+                        auth.requestMatchers("/api/users/createUser", "/api/auth/login").permitAll()
                                 .anyRequest().authenticated()
 
                 ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
