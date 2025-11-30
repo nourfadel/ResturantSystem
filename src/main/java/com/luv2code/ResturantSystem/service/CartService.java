@@ -84,7 +84,7 @@ public class CartService {
         Cart cart = getUserCart(userId);
 
         CartItem item = cart.getItems()
-                .stream()
+                    .stream()
                 .filter(i -> i.getId() == cartItemId)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Cart item not found!"));

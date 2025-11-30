@@ -30,6 +30,17 @@ public class Order {
     @JoinColumn(name = "resturant_id")
     private Resturant resturant;
 
+
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
+
+    private double totalAmount;
+
+    public Order() {
+    }
+
+
     public List<OrderItem> getItems() {
         return items;
     }
@@ -46,23 +57,6 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> items;
-
-    private double totalAmount;
-
-
-    public Order() {
-    }
-
-    public Order(int id, String status, LocalDateTime created_at, LocalDateTime updated_at, User user, Resturant resturant) {
-        this.id = id;
-        this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.user = user;
-        this.resturant = resturant;
-    }
 
     public int getId() {
         return id;
@@ -120,7 +114,6 @@ public class Order {
                 ", created_at=" + created_at +
                 ", updated_at=" + updated_at +
                 ", user=" + user +
-                ", resturant=" + resturant +
                 '}';
     }
 }
