@@ -90,6 +90,15 @@ public class OrderService {
     }
 
 
+    public void updateOrderStatus(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus("PAID");
+        order.setUpdated_at(LocalDateTime.now());
+        orderRepository.save(order);
+    }
+
     public List<Order> findUserOrders(int id){
         return orderRepository.findByUserId(id);
     }
@@ -101,5 +110,6 @@ public class OrderService {
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
 
 }
