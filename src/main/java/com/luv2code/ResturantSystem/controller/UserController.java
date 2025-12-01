@@ -43,9 +43,10 @@ public class UserController {
 
         String email = loginData.get("email");
         String password = loginData.get("password");
-        String response = userService.login(email,password);
+        String token = userService.login(email,password);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
+
     }
 
 }
