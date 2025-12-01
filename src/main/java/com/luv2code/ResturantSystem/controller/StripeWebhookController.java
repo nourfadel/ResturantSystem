@@ -3,7 +3,9 @@ package com.luv2code.ResturantSystem.controller;
 import com.luv2code.ResturantSystem.service.OrderService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
+import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ public class StripeWebhookController {
 
     private final OrderService orderService;
 
+    @Autowired
     public StripeWebhookController(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -30,8 +33,7 @@ public class StripeWebhookController {
                                                 @RequestHeader("Stripe-Signature") String sigHeader) {
 
         StringBuilder payload = new StringBuilder();
-        try {
-            BufferedReader reader = request.getReader();
+        try (BufferedReader reader = request.getReader()) {
             String line;
             while ((line = reader.readLine()) != null) {
                 payload.append(line);
@@ -43,21 +45,32 @@ public class StripeWebhookController {
         Event event;
         try {
             event = Webhook.constructEvent(
-                    payload.toString(), sigHeader, webhookSecret
+                    payload.toString(),
+                    sigHeader,
+                    webhookSecret
             );
         } catch (SignatureVerificationException e) {
             return ResponseEntity.badRequest().body("Invalid signature");
         }
 
         switch (event.getType()) {
+
             case "checkout.session.completed":
-                String orderId = event.getData().getObject()
-                        .getMetadata().get("orderId");
+                Session session = (Session) event.getDataObjectDeserializer()
+                        .getObject()
+                        .orElseThrow(() -> new RuntimeException("Failed to deserialize event"));
+
+                String orderId = session.getMetadata().get("orderId");
 
                 orderService.updateOrderStatus(Integer.parseInt(orderId));
                 break;
+
+            case "payment_intent.payment_failed":
+                System.out.println("Payment Failed!");
+                break;
         }
 
-        return ResponseEntity.ok("Received");
+        return ResponseEntity.ok("Webhook handled");
     }
+
 }

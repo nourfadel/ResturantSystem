@@ -24,8 +24,11 @@ public class StripePaymentService {
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:8080/payment-success?orderId="+order.getId())
-                .setCancelUrl("http://localhost:8080/payment-cancel?orderId="+order.getId())
+                .setSuccessUrl("http://localhost:8080/payment-success?orderId=" + order.getId())
+                .setCancelUrl("http://localhost:8080/payment-cancel?orderId=" + order.getId())
+
+                .putMetadata("orderId", String.valueOf(order.getId()))
+
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
                                 .setQuantity(1L)
@@ -36,16 +39,17 @@ public class StripePaymentService {
                                                 .setProductData(
                                                         SessionCreateParams.LineItem.PriceData.ProductData
                                                                 .builder()
-                                                                .setName("Restuarant Order # "+order.getId())
+                                                                .setName("Restuarant Order # " + order.getId())
                                                                 .build()
                                                 ).build()
                                 ).build()
-                ).build();
+                )
+                .build();
 
         Session session = Session.create(params);
-
         return session.getUrl();
     }
+
 
 
 

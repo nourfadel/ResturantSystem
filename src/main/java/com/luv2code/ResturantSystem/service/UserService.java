@@ -1,5 +1,6 @@
 package com.luv2code.ResturantSystem.service;
 
+import com.luv2code.ResturantSystem.config.JwtUtil;
 import com.luv2code.ResturantSystem.entity.User;
 import com.luv2code.ResturantSystem.repository.UserRepository;
 import org.springframework.beans.factory.ObjectProvider;
@@ -22,12 +23,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticationManager authenticationManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     public User addUser(User user){
@@ -53,17 +56,17 @@ public class UserService {
 
     // add method for login
     public String login(String email, String password){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Invalid email or password");
+        }
 
-        return "login successful";
-    }
+        // هنا نولّد JWT token
+        String token = jwtUtil.generateToken(user.getEmail());
 
-    public Optional<User> findByEmail(String email){
-        return userRepository.findByEmail(email);
+        return token;
     }
 
 }

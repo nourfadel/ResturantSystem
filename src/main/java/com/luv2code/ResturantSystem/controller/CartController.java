@@ -43,7 +43,7 @@ public class CartController {
         return cartService.removeItem(userId,cartItemId);
     }
 
-    @DeleteMapping("/{userId}/remove")
+    @DeleteMapping("/{userId}/clear")
     public String clearCart(@PathVariable int userId) {
         cartService.clearCart(userId);
         return "Cart Cleared Successfully";
