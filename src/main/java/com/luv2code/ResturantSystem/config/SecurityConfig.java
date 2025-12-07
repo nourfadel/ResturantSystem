@@ -41,7 +41,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/users/createUser", "/api/users/login").permitAll()
+                        auth.requestMatchers("/api/users/createUser", "/api/users/login","/api/stripe/webhook").permitAll()
                                 .anyRequest().authenticated()
 
                 ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

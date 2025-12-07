@@ -50,10 +50,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims); // run function that pass in the call like Claims::getSubject
     }
 
-    //    ✔️ مسؤول عن فك التوكن والتحقق من التوقيع.
-    //✔️ لو التوقيع غلط → JWT يرمي Exception.
-    //✔️ وبعد فكّه بيرجع Body اللي فيه:
-    //    subject, issue date, expiration…
+
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
