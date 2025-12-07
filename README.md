@@ -35,3 +35,21 @@ This application enables seamless communication between customers and multiple r
 ```bash
 git clone https://github.com/nourfadel/ResturantSystem.git
 
+2. Navigate to the project directory:  
+
+cd ResturantSystem
+
+## API Documentation
+
+You can access the REST endpoints at:  
+http://localhost:8080/api
+
+Endpoints include:  
+- `/restaurants` – Browse available restaurants  
+- `/orders` – Place and manage orders  
+- `/users` – User registration and management
+
+## Contribution
+
+Contributions are welcome! Please fork the repository and create a pull request with your changes.
+
